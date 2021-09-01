@@ -2,6 +2,7 @@
     algebra.py
 """
 
+
 def factorMultiply(f1, f2):
     return (
         f1[0] * f2[0],
