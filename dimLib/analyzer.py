@@ -6,6 +6,7 @@ from functools import reduce
 
 from .exceptions import MeasurementParseError
 from .units import synonymMap, units, pureOne
+from .algebra import factorMultiply, factorPower
 
 
 def validate(m_string: str):
@@ -49,6 +50,9 @@ def validate(m_string: str):
             if seg != '/'
         ]
 
+        if len(mFactors) == 0:
+            raise MeasurementParseError('No input')
+
         # folding the factors into a single dimensionful quantity
         result = reduce(factorMultiply, mFactors, pureOne)
 
@@ -88,24 +92,3 @@ def isPureNumber(f_string: str):
         return float(f_string)
     except ValueError:
         return None
-
-
-def factorMultiply(f1, f2):
-    return (
-        f1[0] * f2[0],
-        {
-            un: ue
-            for un, ue in {
-                u: f1[1].get(u, 0) + f2[1].get(u, 0)
-                for u in f1[1].keys() | f2[1].keys()
-            }.items()
-            if ue != 0
-        }
-    )
-
-
-def factorPower(f, exponent):
-    return [
-        f[0] ** exponent,
-        {u: n * exponent for u, n in f[1].items()}
-    ]
