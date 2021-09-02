@@ -56,6 +56,9 @@ derivedUnits = {
     'C': (1, {'A': 1, 's': 1}),
     'Ω': (1, {'Kg': 1, 'm': 2, 'A': -2, 's': -3}),
     'V': (1, {'Kg': 1, 'm': 2, 'A': -1, 's': -3}),
+    'S': (1, {'Kg': -1, 'm': -2, 'A': 2, 's': 3}),
+    'F': (1, {'Kg': -1, 'm': -2, 'A': 2, 's': 4}),
+    'H': (1, {'Kg': 1, 'm': 2, 'A': -2, 's': -2}),
 }
 
 standardPrefixes = {
@@ -96,6 +99,9 @@ autoDerivedUnitSeed = {
     'C': standardPrefixes,
     'Ω': standardPrefixes,
     'V': standardPrefixes,
+    'S': standardPrefixes,
+    'F': standardPrefixes,
+    'H': standardPrefixes,
 }
 
 unitSynonyms = {
@@ -114,6 +120,9 @@ unitSynonyms = {
     'C': {'Coulomb', 'Coulombs', 'coulomb', 'coulombs'},
     'Ω': {'Ohm', 'ohm', 'ohms', 'Ohms'},
     'V': {'Volt', 'Volts', 'volt', 'volts'},
+    'S': {'Siemens', 'siemens'},
+    'F': {'Farad', 'Farads', 'farad', 'farads'},
+    'H': {'Henry', 'Henrys', 'henry', 'henrys'},
     'g': {'gram', 'grams'},
     'oz': {'ounce', 'ounces'},
     'm': {'meter', 'meters'},
