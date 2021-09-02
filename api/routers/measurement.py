@@ -4,13 +4,14 @@
 
 
 from fastapi import APIRouter
+# from typing import Optional
 from pydantic import BaseModel
 
-from dimLib.analyzer import validate
+from dimLib.analyzer import validate, getAllUnitSymbols
 from dimLib.formatting import dress
 
 
-class RawMeasurement(BaseModel):
+class ValidationRequest(BaseModel):
     text: str
 
 
@@ -18,8 +19,16 @@ measurementRouter = APIRouter()
 
 
 @measurementRouter.post('/validate')
-async def validate_measurement(raw_measurement: RawMeasurement):
+async def validate_measurement(v_request: ValidationRequest):
     """
     Validate a measurement.
     """
-    return dress(validate(raw_measurement.text))
+    return dress(validate(v_request.text))
+
+
+@measurementRouter.get('/units')
+async def get_all_units():
+    """
+        Get a list of all known unit symbols.
+    """
+    return sorted(getAllUnitSymbols())

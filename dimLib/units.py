@@ -36,6 +36,8 @@ derivedUnits = {
     'hectare': (10000, {'m': 2}),
     'Hz': (1, {'s': -1}),
     # composite dimensions for most physical quantities (SI + other)
+    'kmh': (1/3.6, {'m': 1, 's': -1}),
+    'mph': (1609.344/3.6, {'m': 1, 's': -1}),
     'N': (1, {'Kg': 1, 'm': 1, 's': -2}),
     'J': (1, {'Kg': 1, 'm': 2, 's': -2}),
     'cal': (4.184, {'Kg': 1, 'm': 2, 's': -2}),
@@ -131,30 +133,6 @@ unitSynonyms = {
     'cd': {'candela', 'candelas'},
 }
 
-# Validation checks:
-# * no overlap between fundamental units and derived units
-if len(derivedUnits.keys() & fundamentalUnits) > 0:
-    raise ValueError('Overlap between fundamental and derived units')
-# * no unknown symbols in the synonym list
-allOriginals = derivedUnits.keys() | fundamentalUnits
-if len(unitSynonyms.keys() - allOriginals) > 0:
-    raise ValueError('Unknown symbols in the synonym list')
-# * no duplicates among the synonyms
-allSynonymsList = [syn for syns in unitSynonyms.values() for syn in syns]
-allSynonyms = set(allSynonymsList)
-if len(allSynonymsList) != len(allSynonyms):
-    raise ValueError('Duplicate synonyms detected')
-# * no overlap between synonyms and originals
-if len(allSynonyms & allOriginals) > 0:
-    raise ValueError('Overlap between synonyms and original symbols')
-# * mapping goes only to fundamental units
-allMappingSymbols = {
-    sym
-    for origUnit in derivedUnits.values()
-    for sym in origUnit[1].keys()
-}
-if len(allMappingSymbols - fundamentalUnits) > 0:
-    raise ValueError('Not all units in mapping lead to fundamental units only')
 
 # helper data structures - automatically generated from the above
 synonymMap = {

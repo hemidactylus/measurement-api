@@ -92,3 +92,7 @@ def isPureNumber(f_string: str):
         return float(f_string)
     except ValueError:
         return None
+
+
+def getAllUnitSymbols():
+    return synonymMap.keys() | units.keys()
