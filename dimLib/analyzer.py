@@ -5,7 +5,7 @@
 from functools import reduce
 
 from .exceptions import MeasurementParseError
-from .units import synonymMap, units, pureOne
+from .units import units, pureOne
 from .algebra import factorMultiply, factorPower
 
 
@@ -80,11 +80,10 @@ def parseFactor(f_string: str):
             symbol = f_string
             exponent = 1
 
-        symbol1 = synonymMap.get(symbol, symbol)
-        if symbol1 in units:
-            return factorPower(units[symbol1], exponent)
+        if symbol in units:
+            return factorPower(units[symbol], exponent)
         else:
-            raise MeasurementParseError(f'Unknown unit: "{symbol1}"')
+            raise MeasurementParseError(f'Unknown unit: "{symbol}"')
 
 
 def isPureNumber(f_string: str):
@@ -95,4 +94,4 @@ def isPureNumber(f_string: str):
 
 
 def getAllUnitSymbols():
-    return synonymMap.keys() | units.keys()
+    return units.keys()

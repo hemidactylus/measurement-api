@@ -81,29 +81,6 @@ standardPrefixes = {
     'y': 10**(-24),
 }
 
-autoDerivedUnitSeed = {
-    'm': standardPrefixes,
-    's': standardPrefixes,
-    'A': standardPrefixes,
-    'K': standardPrefixes,
-    'mol': standardPrefixes,
-    'cd': standardPrefixes,
-    'Hz': standardPrefixes,
-    'N': standardPrefixes,
-    'J': standardPrefixes,
-    'W': standardPrefixes,
-    'T': standardPrefixes,
-    'G': standardPrefixes,
-    'Gs': standardPrefixes,
-    'Wb': standardPrefixes,
-    'C': standardPrefixes,
-    'Ω': standardPrefixes,
-    'V': standardPrefixes,
-    'S': standardPrefixes,
-    'F': standardPrefixes,
-    'H': standardPrefixes,
-}
-
 unitSynonyms = {
     'N': {'newton', 'newtons', 'Newton', 'Newtons'},
     'J': {'joule', 'joules', 'Joule', 'Joules'},
@@ -142,38 +119,58 @@ unitSynonyms = {
     'cd': {'candela', 'candelas'},
 }
 
-
-# helper data structures - automatically generated from the above
-synonymMap = {
-    syn: uni
-    for uni, syns in unitSynonyms.items()
-    for syn in syns
+autoDerivedUnitSeed = {
+    'm': standardPrefixes,
+    's': standardPrefixes,
+    'A': standardPrefixes,
+    'K': standardPrefixes,
+    'mol': standardPrefixes,
+    'cd': standardPrefixes,
+    'Hz': standardPrefixes,
+    'N': standardPrefixes,
+    'J': standardPrefixes,
+    'W': standardPrefixes,
+    'T': standardPrefixes,
+    'G': standardPrefixes,
+    'Gs': standardPrefixes,
+    'Wb': standardPrefixes,
+    'C': standardPrefixes,
+    'Ω': standardPrefixes,
+    'V': standardPrefixes,
+    'S': standardPrefixes,
+    'F': standardPrefixes,
+    'H': standardPrefixes,
 }
 
+units0 = {
+    fu: [1, {fu: 1}]
+    for fu in fundamentalUnits
+}
 
-def resolveDerivedUnit(unit):
-    if unit in derivedUnits:
-        return derivedUnits[unit]
-    else:
-        return (1, {unit: 1})
+units1 = deep_merge(
+    units0,
+    derivedUnits,
+)
 
+unitsFromSynonyms = {
+    syn: units1[origUnit]
+    for origUnit, syns in unitSynonyms.items()
+    for syn in syns
+}
+units2 = deep_merge(
+    units1,
+    unitsFromSynonyms,
+)
 
-autoDerivedUnits = {
+unitsWithPrefix = {
     '%s%s' % (prefixName, origUnit): factorMultiply(
         (prefixFactor, {}),
-        resolveDerivedUnit(origUnit)
+        units2[origUnit]
     )
     for origUnit, prefixMap in autoDerivedUnitSeed.items()
     for prefixName, prefixFactor in prefixMap.items()
 }
-
 units = deep_merge(
-    {
-        fu: [1, {fu: 1}]
-        for fu in fundamentalUnits
-    },
-    deep_merge(
-        derivedUnits,
-        autoDerivedUnits,
-    ),
+    units2,
+    unitsWithPrefix,
 )
