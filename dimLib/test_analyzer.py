@@ -11,23 +11,27 @@ from dimLib.units import derivedUnits, fundamentalUnits, unitSynonyms
 
 
 def test_validate():
-    assert(dress(validate('1 m'))['label'] == '1 m')
+    #
+    assert(dress(validate('1 m'))['label'] == '1 m'), 'wrong labeling'
+    #
+    assert(dress(validate('1 m'))['measurement'][0] == 1), 'wrong number'
+    #
+    assert(dress(validate('1 m'))['measurement'][1] == {'m': 1}), 'wrong units'
 
 
 def test_units_consistency():
-
+    #
     assert len(derivedUnits.keys() & fundamentalUnits) == 0, 'Overlap between fundamental and derived units'
-        
-
+    #
     allOriginals = derivedUnits.keys() | fundamentalUnits
     assert len(unitSynonyms.keys() - allOriginals) == 0, 'Unknown symbols in the synonym list'
-
+    #
     allSynonymsList = [syn for syns in unitSynonyms.values() for syn in syns]
     allSynonyms = set(allSynonymsList)
     assert len(allSynonymsList) == len(allSynonyms), 'Duplicate synonyms detected'
-
+    #
     assert len(allSynonyms & allOriginals) == 0, 'Overlap between synonyms and original symbols'
-
+    #
     allMappingSymbols = {
         sym
         for origUnit in derivedUnits.values()
