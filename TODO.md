@@ -6,8 +6,6 @@ docstrings
 
 helpful comments
 
-rewrite flow anon/customer, all of it
-
 logging/debug log
 
 ### Creation of tables:
