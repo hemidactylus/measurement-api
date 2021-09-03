@@ -11,7 +11,7 @@ from api.settings import getSettings
 
 
 def getCaller(*, X_API_Key: Optional[str] = Header(None), req: Request,
-              X_Customer_ID: Optional[str] = Header(None)) -> Caller:
+              X_Customer_ID: Optional[str] = Header(None)):
     """
         Identify the caller (whether anonymous or key-bearer).
         Return a Caller object.

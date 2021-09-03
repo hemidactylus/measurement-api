@@ -11,7 +11,7 @@ from api.database.dbAccess import (getDbSession, countHitsForCaller,
 from api.helpers.callerID import getCaller
 from api.settings import getSettings
 
-from dimLib.analyzer import validate, getAllUnitSymbols
+from dimLib.analyzer import validate, getAllUnitSymbols, getUnitInfo
 from dimLib.formatting import dress
 
 
@@ -57,6 +57,18 @@ async def validate_measurement(v_request: ValidationRequest,
 @measurementRouter.get('/units')
 async def get_all_units():
     """
-        Get a list of all known unit symbols.
+    Get a list of all known unit symbols.
     """
     return sorted(getAllUnitSymbols())
+
+
+@measurementRouter.get('/unit/{unitSymbol}')
+async def get_unit_info(unitSymbol: str):
+    """
+    Get some info on a particular unit.
+    """
+    unitInfo = getUnitInfo(unitSymbol)
+    if unitInfo is not None:
+        return unitInfo
+    else:
+        return HTTPException(404, 'Unknown symbol.')

@@ -8,6 +8,8 @@ from cassandra.cluster import Cluster
 from cassandra.auth import PlainTextAuthProvider
 import json
 
+from api.helpers.keyCreation import generateRandomKey
+
 from api.settings import getSettings
 
 from configuration.config import secure_db_bundle_path, secrets_json_path
@@ -61,3 +63,22 @@ async def checkTotalHits(caller, dbSession):
                 return results[0].rate_total
         else:
             raise HTTPException(401, 'Unknown customer ID.')
+
+
+async def createAPIKey(callerID, rateTotal, dbSession):
+    """
+        Warning: will overwrite previous key for callerID, if any.
+    """
+    newKey = generateRandomKey()
+    dbSession.execute(
+        'INSERT INTO customers (caller_id, api_key, rate_total) VALUES (%s, %s, %s);',
+        (callerID, newKey, rateTotal),
+    )
+    return newKey
+
+
+async def revokeAPIKey(callerID, dbSession):
+    dbSession.execute(
+        'DELETE FROM customers WHERE caller_id = %s;',
+        (callerID,),
+    )

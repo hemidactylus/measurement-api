@@ -8,6 +8,10 @@ helpful comments
 
 logging/debug log
 
+async task logging of req!
+
+warning about api keys being stored in cleartext (as opposed to salted + hashed in a crypto strong form)
+
 ### Creation of tables:
 
 To be automated:

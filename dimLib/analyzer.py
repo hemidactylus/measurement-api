@@ -95,3 +95,7 @@ def isPureNumber(f_string: str):
 
 def getAllUnitSymbols():
     return units.keys()
+
+
+def getUnitInfo(unitSymbol):
+    return units.get(unitSymbol)

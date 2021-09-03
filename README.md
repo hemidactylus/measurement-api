@@ -33,6 +33,10 @@ testing.
 
 Database name: `measurements`, keyspace name: `measurement_api`.
 
+## Doc
+
+head to `http://localhost:8000/docs`.
+
 ## Sample requests
 
 Anonymous call:
@@ -69,6 +73,24 @@ curl -s \
   -H 'x-customer-id: abc' \
   -H 'x-api-key: 123' \
   'http://localhost:8000/v1/info/rate_available' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' | python -mjson.tool
+```
+
+### Unit queries
+
+Listing of known units:
+```
+curl -s \
+  'http://localhost:8000/v1/measurement/unit/cal' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' | python -mjson.tool
+```
+
+Details on a unit:
+```
+curl -s \
+  'http://localhost:8000/v1/measurement/units' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' | python -mjson.tool
 ```
