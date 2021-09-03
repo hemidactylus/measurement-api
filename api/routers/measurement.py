@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from loguru import logger
 
 from api.database.dbAccess import (getDbSession, countHitsForCaller,
-                                   checkTotalHits, logRequest)
+                                   checkTotalHits, logRequest, getRateInfo)
 from api.helpers.callerID import getCaller
 from api.settings import getSettings
 
@@ -33,20 +33,14 @@ async def validate_measurement(v_request: ValidationRequest,
     """
     settings = getSettings()
 
-    if settings.debug:
-        logger.info('[validate_measurement] caller = %s' % caller)
+    rateInfo = await getRateInfo(caller, cassandra)
 
-    # get client rate available
-    rateTotal = await checkTotalHits(caller, cassandra)
     if settings.debug:
-        logger.info('[validate_measurement] rateTotal = %s' % rateTotal)
+        logger.info('caller = %s' % caller)
+        logger.info('rateTotal = %s' % rateInfo['total'])
+        logger.info('rateConsumed = %s' % rateInfo['consumed'])
 
-    # count request in last timespan
-    rateConsumed = await countHitsForCaller(caller, cassandra)
-    if settings.debug:
-        logger.info('[validate_measurement] rateConsumed = %s' % rateConsumed)
-
-    if rateTotal <= rateConsumed:
+    if rateInfo['total'] <= rateInfo['consumed']:
         raise HTTPException(429)
     else:
         # schedule logging this request to run as a deferred call ...

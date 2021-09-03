@@ -87,3 +87,17 @@ async def revokeAPIKey(callerID, dbSession):
         'DELETE FROM customers WHERE caller_id = %s;',
         (callerID,),
     )
+
+
+async def getRateInfo(caller, dbSession):
+    settings = getSettings()
+    # get client rate available
+    rateTotal = await checkTotalHits(caller, dbSession)
+    # count request in last timespan
+    rateConsumed = await countHitsForCaller(caller, dbSession)
+    return {
+        'window_seconds': settings.rateLimitWindowSeconds,
+        'consumed': rateConsumed,
+        'total': rateTotal,
+        'available': rateTotal - rateConsumed,
+    }
