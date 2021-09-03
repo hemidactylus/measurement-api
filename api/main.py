@@ -8,6 +8,7 @@ from fastapi.responses import JSONResponse
 from .helpers.cors import addCors
 
 from .routers.measurement import measurementRouter
+from .routers.info import infoRouter
 
 from dimLib.exceptions import MeasurementParseError
 
@@ -27,4 +28,9 @@ async def parsing_exception_handler(request: Request,
 app.include_router(
     measurementRouter,
     prefix='/v1/measurement',
+)
+
+app.include_router(
+    infoRouter,
+    prefix='/v1/info',
 )

@@ -1,4 +1,4 @@
-dse-driver==2.11.1
+cassandra-driver==3.25.0
 fastapi==0.68.0
 pytest-6.2.5
 uvicorn==0.14.0
