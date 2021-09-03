@@ -23,8 +23,7 @@ if __name__ == '__main__':
                         help='Total time-window rate (used when creating)',
                         type=int, default=None, nargs='?')
     args = parser.parse_args()
-
-
+    #
     if args.command == 'create':
         if args.rate is None:
             print('ERROR: when creating an API Key, please provide rate.')

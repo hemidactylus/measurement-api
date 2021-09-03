@@ -3,7 +3,7 @@
 """
 
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from pydantic import BaseModel
 
 from api.database.dbAccess import (getDbSession, countHitsForCaller,
@@ -24,6 +24,7 @@ measurementRouter = APIRouter()
 
 @measurementRouter.post('/validate')
 async def validate_measurement(v_request: ValidationRequest,
+                               bg_tasks: BackgroundTasks,
                                cassandra=Depends(getDbSession),
                                caller=Depends(getCaller)):
     """
@@ -47,11 +48,17 @@ async def validate_measurement(v_request: ValidationRequest,
     if rateTotal <= rateConsumed:
         raise HTTPException(429)
     else:
-        # schedule marking this request for this client
-        await logRequest(caller, v_request.text, cassandra)
-
-        # return
-        return dress(validate(v_request.text))
+        # schedule logging this request to run as a deferred call ...
+        bg_tasks.add_task(
+            logRequest,
+            caller,
+            v_request.text,
+            cassandra,
+        )
+        # ... validate the input expression (and 'dress' it) ...
+        dressedResult = dress(validate(v_request.text))
+        # and finally return it to the caller:
+        return dressedResult
 
 
 @measurementRouter.get('/units')

@@ -13,6 +13,7 @@ from api.settings import getSettings
 
 infoRouter = APIRouter()
 
+
 @infoRouter.get('/rate_available')
 async def rate_available(cassandra=Depends(getDbSession),
                          caller=Depends(getCaller)):

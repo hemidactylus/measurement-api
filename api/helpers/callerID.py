@@ -27,7 +27,7 @@ def getCaller(*, X_API_Key: Optional[str] = Header(None), req: Request,
         )
     else:
         if X_API_Key is None:
-            raise HTTPException(401, 'Please provide an API Key through the "X-Customer-ID" header.')
+            raise HTTPException(401, 'Missing "X-API-Key" header.')
         else:
             return Caller(
                 anonymous=False,

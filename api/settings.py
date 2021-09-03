@@ -6,7 +6,11 @@ from functools import lru_cache
 from pydantic import BaseSettings
 import json
 
-from configuration.config import defaultRateLimitWindowSeconds, defaultAnonymousRateAllowed, secrets_json_path
+from configuration.config import (
+    defaultRateLimitWindowSeconds,
+    defaultAnonymousRateAllowed,
+    secrets_json_path,
+)
 secrets = json.load(open(secrets_json_path))
 
 
@@ -17,6 +21,7 @@ class Settings(BaseSettings):
     debug: bool = False
     rateLimitWindowSeconds: int = defaultRateLimitWindowSeconds
     anonymousRateAllowed: int = defaultAnonymousRateAllowed
+
 
 @lru_cache()
 def getSettings():
