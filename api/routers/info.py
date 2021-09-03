@@ -4,6 +4,7 @@
 
 
 from fastapi import APIRouter, Depends
+from loguru import logger
 
 from api.database.dbAccess import (getDbSession, countHitsForCaller,
                                    checkTotalHits)
@@ -23,17 +24,17 @@ async def rate_available(cassandra=Depends(getDbSession),
     settings = getSettings()
 
     if settings.debug:
-        print('[rate_available] caller = %s' % caller)
+        logger.info('[rate_available] caller = %s' % caller)
 
     # get client rate available
     rateTotal = await checkTotalHits(caller, cassandra)
     if settings.debug:
-        print('[rate_available] rateTotal = %s' % rateTotal)
+        logger.info('[rate_available] rateTotal = %s' % rateTotal)
 
     # count request in last timespan
     rateConsumed = await countHitsForCaller(caller, cassandra)
     if settings.debug:
-        print('[rate_available] rateConsumed = %s' % rateConsumed)
+        logger.info('[rate_available] rateConsumed = %s' % rateConsumed)
 
     return {
         'window_seconds': settings.rateLimitWindowSeconds,

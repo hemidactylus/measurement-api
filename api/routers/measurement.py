@@ -5,6 +5,7 @@
 
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from pydantic import BaseModel
+from loguru import logger
 
 from api.database.dbAccess import (getDbSession, countHitsForCaller,
                                    checkTotalHits, logRequest)
@@ -33,17 +34,17 @@ async def validate_measurement(v_request: ValidationRequest,
     settings = getSettings()
 
     if settings.debug:
-        print('[validate_measurement] caller = %s' % caller)
+        logger.info('[validate_measurement] caller = %s' % caller)
 
     # get client rate available
     rateTotal = await checkTotalHits(caller, cassandra)
     if settings.debug:
-        print('[validate_measurement] rateTotal = %s' % rateTotal)
+        logger.info('[validate_measurement] rateTotal = %s' % rateTotal)
 
     # count request in last timespan
     rateConsumed = await countHitsForCaller(caller, cassandra)
     if settings.debug:
-        print('[validate_measurement] rateConsumed = %s' % rateConsumed)
+        logger.info('[validate_measurement] rateConsumed = %s' % rateConsumed)
 
     if rateTotal <= rateConsumed:
         raise HTTPException(429)
